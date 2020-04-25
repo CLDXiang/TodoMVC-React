@@ -1,0 +1,27 @@
+.list-item {
+  display: flex;
+}
+
+.list-item__content {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.list-item__content:hover {
+  cursor: pointer;
+}
+
+.content__line {
+}
+
+.content__line--completed {
+  text-decoration: line-through;
+}
+
+.content__time {
+}
+
+.list-item__actions {
+}

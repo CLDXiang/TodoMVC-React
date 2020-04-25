@@ -1,0 +1,9 @@
+.content-box {
+  height: 62%;
+  width: 38%;
+  min-width: 300px;
+  min-height: 500px;
+  /* background-color: green; */
+  border-radius: 6px;
+  border: solid 2px #ddd;
+}

@@ -6,4 +6,8 @@
   /* background-color: green; */
   border-radius: 6px;
   border: solid 2px #ddd;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ListItem from './ListItem';
+import ActionBar from './ActionBar';
 import './Home.css';
 
 class Home extends Component {
@@ -22,6 +23,10 @@ class Home extends Component {
           isCompleted: true,
         },
       ],
+      /**
+       * allowed value: 'all', 'completed', 'uncompleted'
+       */
+      showingGroup: 'all',
     };
   }
 
@@ -40,20 +45,43 @@ class Home extends Component {
     }));
   };
 
+  handleChangeShowingGroup = (newGroup) => {
+    this.setState(() => ({
+      showingGroup: newGroup,
+    }));
+  };
+
   render() {
-    const { todoItems } = this.state;
+    const { todoItems, showingGroup } = this.state;
     return (
       <div className="content-box">
         <div>
-          {todoItems.map((item) => (
-            <ListItem
-              key={item.id}
-              handleDeleteItem={this.handleDeleteItem}
-              handleChangeIsCompleted={this.handleChangeIsCompleted}
-              item={item}
-            />
-          ))}
+          {todoItems
+            .filter((item) => {
+              switch (showingGroup) {
+                case 'all':
+                  return true;
+                case 'completed':
+                  return item.isCompleted;
+                case 'uncompleted':
+                  return !item.isCompleted;
+                default:
+                  return false;
+              }
+            })
+            .map((item) => (
+              <ListItem
+                key={item.id}
+                handleDeleteItem={this.handleDeleteItem}
+                handleChangeIsCompleted={this.handleChangeIsCompleted}
+                item={item}
+              />
+            ))}
         </div>
+        <ActionBar
+          showingGroup={showingGroup}
+          handleChangeShowingGroup={this.handleChangeShowingGroup}
+        />
       </div>
     );
   }

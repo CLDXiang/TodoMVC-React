@@ -26,8 +26,106 @@ class Home extends Component {
           deadLine: '2020/4/20 13:41:13',
           isCompleted: true,
         },
+        {
+          id: 3,
+          content: '待办事项3',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: false,
+        },
+        {
+          id: 4,
+          content: '待办事项4',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: true,
+        },
+        {
+          id: 5,
+          content: '待办事项5',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: false,
+        },
+        {
+          id: 6,
+          content: '待办事项6',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: true,
+        },
+        {
+          id: 7,
+          content: '待办事项7',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: false,
+        },
+        {
+          id: 8,
+          content: '待办事项8',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: true,
+        },
+        {
+          id: 9,
+          content: '待办事项9',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: false,
+        },
+        {
+          id: 10,
+          content: '待办事项10',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: true,
+        },
+        {
+          id: 11,
+          content: '待办事项11',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: false,
+        },
+        {
+          id: 12,
+          content: '待办事项12',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: true,
+        },
+        {
+          id: 13,
+          content: '待办事项13',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: false,
+        },
+        {
+          id: 14,
+          content: '待办事项14',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: true,
+        },
+        {
+          id: 15,
+          content: '待办事项15',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: false,
+        },
+        {
+          id: 16,
+          content: '待办事项16',
+          createdAt: '2020/4/20 13:41:12',
+          deadLine: '2020/4/20 13:41:13',
+          isCompleted: true,
+        },
       ],
-      nextId: 2,
+      nextId: 17,
       /**
        * allowed value: 'all', 'completed', 'uncompleted'
        */
@@ -93,7 +191,7 @@ class Home extends Component {
     const { todoItems, showingGroup, isAddTodoBarVisible } = this.state;
     return (
       <div className="content-box">
-        <div>
+        <div className="item-list">
           {todoItems
             .filter((item) => {
               switch (showingGroup) {

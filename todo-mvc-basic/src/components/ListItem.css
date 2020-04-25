@@ -1,5 +1,8 @@
 .list-item {
   display: flex;
+
+  padding: 10px 20px;
+  border-bottom: solid 1px #ddd;
 }
 
 .list-item__content {
@@ -21,6 +24,10 @@
 }
 
 .content__time {
+  font-size: 12px;
+  color: #666;
+
+  padding-right: 20px;
 }
 
 .list-item__actions {

@@ -14,13 +14,19 @@ const ListItem = (props) => {
         onClick={() => handleChangeIsCompleted(id)}
       >
         <span
-          className={isCompleted ? 'content__line--completed' : 'content__line'}
+          className={isCompleted ? 'content__line content__line--completed' : 'content__line'}
         >
           {content}
         </span>
         <span className="content__line">
-          <span className="content__time">{createdAt}</span>
-          <span className="content__time">{deadLine}</span>
+          <span className="content__time">
+            开始时间：
+            {createdAt}
+          </span>
+          <span className="content__time">
+            截止时间：
+            {deadLine}
+          </span>
         </span>
       </div>
       <div className="list-item__actions">

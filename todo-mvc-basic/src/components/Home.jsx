@@ -4,6 +4,7 @@ import ListItem from './ListItem';
 import ActionBar from './ActionBar';
 import AddTodoBar from './AddTodoBar';
 import './Home.css';
+import storage from '../utils/storage';
 
 moment.locale('zh-cn');
 
@@ -11,6 +12,22 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      todoItems: [],
+      nextId: 0,
+      /**
+       * allowed value: 'all', 'completed', 'uncompleted'
+       */
+      showingGroup: 'all',
+
+      isAddTodoBarVisible: false,
+    };
+  }
+
+  componentDidMount() {
+    /**
+     * 仅用作测试，在没有 localStorage 的时候加载这个
+     */
+    const testState = {
       todoItems: [
         {
           id: 0,
@@ -126,28 +143,46 @@ class Home extends Component {
         },
       ],
       nextId: 17,
-      /**
-       * allowed value: 'all', 'completed', 'uncompleted'
-       */
-      showingGroup: 'all',
-
-      isAddTodoBarVisible: false,
     };
+
+    const todoItems = storage.getItem('todoItems');
+    const nextId = storage.getItem('nextId');
+    if (!todoItems || !nextId) {
+      storage.clear();
+      this.setState(() => ({
+        ...testState,
+      }));
+      return;
+    }
+
+    // 设置从 localStorage 中读取的数据
+    this.setState(() => ({
+      todoItems,
+      nextId,
+    }));
   }
 
   handleDeleteItem = (id) => {
-    this.setState((state) => ({
-      todoItems: state.todoItems.filter((item) => item.id !== id),
+    const { todoItems, nextId } = this.state;
+    const newTodoItems = todoItems.filter((item) => item.id !== id);
+    this.setState(() => ({
+      todoItems: newTodoItems,
     }));
+    storage.setItem('todoItems', newTodoItems);
+    storage.setItem('nextId', nextId);
   };
 
   handleChangeIsCompleted = (id) => {
-    this.setState((state) => ({
-      todoItems: state.todoItems.map((item) => {
-        if (item.id === id) return { ...item, isCompleted: !item.isCompleted };
-        return item;
-      }),
+    const { todoItems, nextId } = this.state;
+    const newTodoItems = todoItems.map((item) => {
+      if (item.id === id) return { ...item, isCompleted: !item.isCompleted };
+      return item;
+    });
+    this.setState(() => ({
+      todoItems: newTodoItems,
     }));
+    storage.setItem('todoItems', newTodoItems);
+    storage.setItem('nextId', nextId);
   };
 
   handleChangeShowingGroup = (newGroup) => {
@@ -172,23 +207,29 @@ class Home extends Component {
    * item: { content, deadLine }
    */
   handleAddTodoItem = (item) => {
-    this.setState((state) => ({
-      todoItems: [
-        ...state.todoItems,
-        {
-          content: item.content,
-          deadLine: moment(item.deadLine).format('YYYY/M/D HH:mm:ss'),
-          id: state.nextId,
-          createdAt: moment().format('YYYY/M/D HH:mm:ss'),
-          isCompleted: false,
-        },
-      ],
-      nextId: state.nextId + 1,
+    const { todoItems, nextId } = this.state;
+    const newTodoItems = [
+      ...todoItems,
+      {
+        content: item.content,
+        deadLine: moment(item.deadLine).format('YYYY/M/D HH:mm:ss'),
+        id: nextId,
+        createdAt: moment().format('YYYY/M/D HH:mm:ss'),
+        isCompleted: false,
+      },
+    ];
+
+    this.setState(() => ({
+      todoItems: newTodoItems,
+      nextId: nextId + 1,
     }));
+    storage.setItem('todoItems', newTodoItems);
+    storage.setItem('nextId', nextId + 1);
   };
 
   render() {
     const { todoItems, showingGroup, isAddTodoBarVisible } = this.state;
+    console.log(todoItems);
     return (
       <div className="content-box">
         <div className="item-list">

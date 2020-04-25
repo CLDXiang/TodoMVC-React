@@ -40,3 +40,7 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.add-todo-bar__actions > button {
+  margin-left: 20px;
+}

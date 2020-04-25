@@ -3,6 +3,8 @@
 
   padding: 10px 20px;
   border-bottom: solid 1px #ddd;
+  
+  align-items: center;
 }
 
 .list-item__content {

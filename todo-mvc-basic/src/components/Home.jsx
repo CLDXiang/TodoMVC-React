@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import ListItem from './ListItem';
 import ActionBar from './ActionBar';
+import AddTodoBar from './AddTodoBar';
 import './Home.css';
+
+moment.locale('zh-cn');
 
 class Home extends Component {
   constructor(props) {
@@ -23,10 +27,13 @@ class Home extends Component {
           isCompleted: true,
         },
       ],
+      nextId: 2,
       /**
        * allowed value: 'all', 'completed', 'uncompleted'
        */
       showingGroup: 'all',
+
+      isAddTodoBarVisible: false,
     };
   }
 
@@ -51,8 +58,39 @@ class Home extends Component {
     }));
   };
 
+  showAddTodoBar = () => {
+    this.setState(() => ({
+      isAddTodoBarVisible: true,
+    }));
+  };
+
+  hideAddTodoBar = () => {
+    this.setState(() => ({
+      isAddTodoBarVisible: false,
+    }));
+  };
+
+  /** 加入新待办事项
+   * item: { content, deadLine }
+   */
+  handleAddTodoItem = (item) => {
+    this.setState((state) => ({
+      todoItems: [
+        ...state.todoItems,
+        {
+          content: item.content,
+          deadLine: moment(item.deadLine).format('YYYY/M/D HH:mm:ss'),
+          id: state.nextId,
+          createdAt: moment().format('YYYY/M/D HH:mm:ss'),
+          isCompleted: false,
+        },
+      ],
+      nextId: state.nextId + 1,
+    }));
+  };
+
   render() {
-    const { todoItems, showingGroup } = this.state;
+    const { todoItems, showingGroup, isAddTodoBarVisible } = this.state;
     return (
       <div className="content-box">
         <div>
@@ -81,7 +119,14 @@ class Home extends Component {
         <ActionBar
           showingGroup={showingGroup}
           handleChangeShowingGroup={this.handleChangeShowingGroup}
+          showAddTodoBar={this.showAddTodoBar}
         />
+        {isAddTodoBarVisible && (
+          <AddTodoBar
+            hideAddTodoBar={this.hideAddTodoBar}
+            handleAddTodoItem={this.handleAddTodoItem}
+          />
+        )}
       </div>
     );
   }

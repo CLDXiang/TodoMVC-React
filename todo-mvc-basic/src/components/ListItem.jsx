@@ -3,7 +3,9 @@ import './ListItem.css';
 
 const ListItem = (props) => {
   const { item, handleDeleteItem, handleChangeIsCompleted } = props;
-  const { id, content, createdAt, deadLine, isCompleted } = item;
+  const {
+    id, content, createdAt, deadLine, isCompleted,
+  } = item;
 
   return (
     <div className="list-item">

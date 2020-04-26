@@ -1,31 +1,21 @@
 /* eslint-disable no-alert */
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './AddTodoBar.css';
 
-class AddTodoBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      content: '',
-      deadLine: '',
-    };
-  }
+const AddTodoBar = (props) => {
+  const [content, setContent] = useState('');
+  const [deadLine, setDeadLine] = useState('');
+  const { hideAddTodoBar, handleAddTodoItem } = props;
 
-  onContentChange = (e) => {
-    this.setState({
-      content: e.target.value,
-    });
+  const onContentChange = (e) => {
+    setContent(e.target.value);
   };
 
-  onDeadLineChange = (e) => {
-    this.setState({
-      deadLine: e.target.value,
-    });
+  const onDeadLineChange = (e) => {
+    setDeadLine(e.target.value);
   };
 
-  handleClickConfirmButton = () => {
-    const { content, deadLine } = this.state;
-    const { hideAddTodoBar, handleAddTodoItem } = this.props;
+  const handleClickConfirmButton = () => {
     if (content.trim().length === 0) {
       window.alert('请输入内容');
       return;
@@ -37,46 +27,41 @@ class AddTodoBar extends Component {
     // TODO: 截止时间不能比现在更早
     handleAddTodoItem({ content, deadLine });
     hideAddTodoBar();
-  }
+  };
 
-  render() {
-    const { hideAddTodoBar } = this.props;
-    const { content, deadLine } = this.state;
-
-    return (
-      <div className="add-todo-bar">
-        <div className="add-todo-bar__form">
-          <div className="add-todo-bar__form-item">
-            内容：
-            <input
-              type="text"
-              value={content}
-              onChange={this.onContentChange}
-            />
-          </div>
-          <div className="add-todo-bar__form-item">
-            截止时间：
-            <input
-              type="datetime-local"
-              value={deadLine}
-              onChange={this.onDeadLineChange}
-            />
-          </div>
+  return (
+    <div className="add-todo-bar">
+      <div className="add-todo-bar__form">
+        <div className="add-todo-bar__form-item">
+          内容：
+          <input
+            type="text"
+            value={content}
+            onChange={onContentChange}
+          />
         </div>
-        <div className="add-todo-bar__actions">
-          <button
-            type="button"
-            onClick={this.handleClickConfirmButton}
-          >
-            确认
-          </button>
-          <button type="button" onClick={() => hideAddTodoBar()}>
-            返回
-          </button>
+        <div className="add-todo-bar__form-item">
+          截止时间：
+          <input
+            type="datetime-local"
+            value={deadLine}
+            onChange={onDeadLineChange}
+          />
         </div>
       </div>
-    );
-  }
-}
+      <div className="add-todo-bar__actions">
+        <button
+          type="button"
+          onClick={handleClickConfirmButton}
+        >
+          确认
+        </button>
+        <button type="button" onClick={() => hideAddTodoBar()}>
+          返回
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default AddTodoBar;

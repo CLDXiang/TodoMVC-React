@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import ListItem from './ListItem';
 import ActionBar from './ActionBar';
@@ -8,22 +8,13 @@ import storage from '../utils/storage';
 
 moment.locale('zh-cn');
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      todoItems: [],
-      nextId: 0,
-      /**
-       * allowed value: 'all', 'completed', 'uncompleted'
-       */
-      showingGroup: 'all',
+const Home = (props) => {
+  const [todoItems, setTodoItems] = useState([]);
+  const [nextId, setNextId] = useState(0);
+  const [showingGroup, setShowingGroup] = useState('all');
+  const [isAddTodoBarVisible, setIsAddTodoBarVisible] = useState(false);
 
-      isAddTodoBarVisible: false,
-    };
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     /**
      * 仅用作测试，在没有 localStorage 的时候加载这个
      */
@@ -145,69 +136,53 @@ class Home extends Component {
       nextId: 17,
     };
 
-    const todoItems = storage.getItem('todoItems');
-    const nextId = storage.getItem('nextId');
-    if (!todoItems || !nextId) {
+    const todoItemsFromStorage = storage.getItem('todoItems');
+    const nextIdFromStorage = storage.getItem('nextId');
+    if (!todoItemsFromStorage || !nextIdFromStorage) {
       storage.clear();
-      this.setState(() => ({
-        ...testState,
-      }));
+      setTodoItems(testState.todoItems);
+      setNextId(testState.nextId);
       return;
     }
 
     // 设置从 localStorage 中读取的数据
-    this.setState(() => ({
-      todoItems,
-      nextId,
-    }));
-  }
+    setTodoItems(todoItemsFromStorage);
+    setNextId(nextIdFromStorage);
+  }, []);
 
-  handleDeleteItem = (id) => {
-    const { todoItems, nextId } = this.state;
+  const handleDeleteItem = (id) => {
     const newTodoItems = todoItems.filter((item) => item.id !== id);
-    this.setState(() => ({
-      todoItems: newTodoItems,
-    }));
+    setTodoItems(newTodoItems);
     storage.setItem('todoItems', newTodoItems);
     storage.setItem('nextId', nextId);
   };
 
-  handleChangeIsCompleted = (id) => {
-    const { todoItems, nextId } = this.state;
+  const handleChangeIsCompleted = (id) => {
     const newTodoItems = todoItems.map((item) => {
       if (item.id === id) return { ...item, isCompleted: !item.isCompleted };
       return item;
     });
-    this.setState(() => ({
-      todoItems: newTodoItems,
-    }));
+    setTodoItems(newTodoItems);
     storage.setItem('todoItems', newTodoItems);
     storage.setItem('nextId', nextId);
   };
 
-  handleChangeShowingGroup = (newGroup) => {
-    this.setState(() => ({
-      showingGroup: newGroup,
-    }));
+  const handleChangeShowingGroup = (newGroup) => {
+    setShowingGroup(newGroup);
   };
 
-  showAddTodoBar = () => {
-    this.setState(() => ({
-      isAddTodoBarVisible: true,
-    }));
+  const showAddTodoBar = () => {
+    setIsAddTodoBarVisible(true);
   };
 
-  hideAddTodoBar = () => {
-    this.setState(() => ({
-      isAddTodoBarVisible: false,
-    }));
+  const hideAddTodoBar = () => {
+    setIsAddTodoBarVisible(false);
   };
 
   /** 加入新待办事项
    * item: { content, deadLine }
    */
-  handleAddTodoItem = (item) => {
-    const { todoItems, nextId } = this.state;
+  const handleAddTodoItem = (item) => {
     const newTodoItems = [
       ...todoItems,
       {
@@ -219,56 +194,50 @@ class Home extends Component {
       },
     ];
 
-    this.setState(() => ({
-      todoItems: newTodoItems,
-      nextId: nextId + 1,
-    }));
+    setTodoItems(newTodoItems);
+    setNextId(nextId + 1);
     storage.setItem('todoItems', newTodoItems);
     storage.setItem('nextId', nextId + 1);
   };
 
-  render() {
-    const { todoItems, showingGroup, isAddTodoBarVisible } = this.state;
-    console.log(todoItems);
-    return (
-      <div className="content-box">
-        <div className="item-list">
-          {todoItems
-            .filter((item) => {
-              switch (showingGroup) {
-                case 'all':
-                  return true;
-                case 'completed':
-                  return item.isCompleted;
-                case 'uncompleted':
-                  return !item.isCompleted;
-                default:
-                  return false;
-              }
-            })
-            .map((item) => (
-              <ListItem
-                key={item.id}
-                handleDeleteItem={this.handleDeleteItem}
-                handleChangeIsCompleted={this.handleChangeIsCompleted}
-                item={item}
-              />
-            ))}
-        </div>
-        <ActionBar
-          showingGroup={showingGroup}
-          handleChangeShowingGroup={this.handleChangeShowingGroup}
-          showAddTodoBar={this.showAddTodoBar}
-        />
-        {isAddTodoBarVisible && (
-          <AddTodoBar
-            hideAddTodoBar={this.hideAddTodoBar}
-            handleAddTodoItem={this.handleAddTodoItem}
-          />
-        )}
+  return (
+    <div className="content-box">
+      <div className="item-list">
+        {todoItems
+          .filter((item) => {
+            switch (showingGroup) {
+              case 'all':
+                return true;
+              case 'completed':
+                return item.isCompleted;
+              case 'uncompleted':
+                return !item.isCompleted;
+              default:
+                return false;
+            }
+          })
+          .map((item) => (
+            <ListItem
+              key={item.id}
+              handleDeleteItem={handleDeleteItem}
+              handleChangeIsCompleted={handleChangeIsCompleted}
+              item={item}
+            />
+          ))}
       </div>
-    );
-  }
-}
+      <ActionBar
+        showingGroup={showingGroup}
+        handleChangeShowingGroup={handleChangeShowingGroup}
+        showAddTodoBar={showAddTodoBar}
+      />
+      {isAddTodoBarVisible && (
+        <AddTodoBar
+          hideAddTodoBar={hideAddTodoBar}
+          handleAddTodoItem={handleAddTodoItem}
+        />
+      )}
+    </div>
+  );
+};
 
 export default Home;

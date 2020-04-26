@@ -8,7 +8,7 @@ import storage from '../utils/storage';
 
 moment.locale('zh-cn');
 
-const Home = (props) => {
+const Home = () => {
   const [todoItems, setTodoItems] = useState([]);
   const [nextId, setNextId] = useState(0);
   const [showingGroup, setShowingGroup] = useState('all');

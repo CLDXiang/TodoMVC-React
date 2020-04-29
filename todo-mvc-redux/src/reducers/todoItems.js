@@ -180,8 +180,8 @@ const todoItemsReducer = (state = initialState, action) => {
     case TOGGLE_IS_COMPLETED:
       id = action.payload.id;
       newTodoItems = todoItems.map((it) => {
-        if (item.id === id) return { ...it, isCompleted: !item.isCompleted };
-        return item;
+        if (it.id === id) return { ...it, isCompleted: !it.isCompleted };
+        return it;
       });
 
       // TODO: 中间件？

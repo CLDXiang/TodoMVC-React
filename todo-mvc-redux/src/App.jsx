@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import appReducer from './reducers/index';
-import Home from './components/Home';
+import HomeContainer from './containers/HomeContainer';
 import './App.css';
 
 const store = createStore(appReducer);
@@ -15,7 +15,7 @@ export default function App() {
         <div className="App">
           <Switch>
             <Route exact path="/">
-              <Home />
+              <HomeContainer />
             </Route>
           </Switch>
         </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import ListItem from './ListItem';
 import ActionBar from './ActionBar';
-import AddTodoBar from './AddTodoBar';
+import AddTodoBarContainer from '../containers/AddTodoBarContainer';
 import './Home.css';
 
 moment.locale('zh-cn');
@@ -12,12 +12,10 @@ const Home = (props) => {
     visibleTodoItems,
     showingGroup,
     isAddTodoBarVisible,
-    handleAddTodoItem,
     handleDeleteItem,
     handleChangeIsCompleted,
     handleChangeShowingGroup,
     showAddTodoBar,
-    hideAddTodoBar,
   } = props;
   return (
     <div className="content-box">
@@ -37,10 +35,7 @@ const Home = (props) => {
         showAddTodoBar={showAddTodoBar}
       />
       {isAddTodoBarVisible && (
-        <AddTodoBar
-          hideAddTodoBar={hideAddTodoBar}
-          handleAddTodoItem={handleAddTodoItem}
-        />
+        <AddTodoBarContainer />
       )}
     </div>
   );

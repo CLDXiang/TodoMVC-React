@@ -3,29 +3,10 @@ import React, { Component } from 'react';
 import './AddTodoBar.css';
 
 class AddTodoBar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      content: '',
-      deadLine: '',
-    };
-  }
-
-  onContentChange = (e) => {
-    this.setState({
-      content: e.target.value,
-    });
-  };
-
-  onDeadLineChange = (e) => {
-    this.setState({
-      deadLine: e.target.value,
-    });
-  };
-
   handleClickConfirmButton = () => {
-    const { content, deadLine } = this.state;
-    const { hideAddTodoBar, handleAddTodoItem } = this.props;
+    const {
+      hideAddTodoBar, handleAddTodoItem, content, deadLine,
+    } = this.props;
     if (content.trim().length === 0) {
       window.alert('请输入内容');
       return;
@@ -37,12 +18,12 @@ class AddTodoBar extends Component {
     // TODO: 截止时间不能比现在更早
     handleAddTodoItem({ content, deadLine });
     hideAddTodoBar();
-  }
+  };
 
   render() {
-    const { hideAddTodoBar } = this.props;
-    const { content, deadLine } = this.state;
-
+    const {
+      hideAddTodoBar, content, deadLine, changeContent, changeDeadline,
+    } = this.props;
     return (
       <div className="add-todo-bar">
         <div className="add-todo-bar__form">
@@ -51,7 +32,7 @@ class AddTodoBar extends Component {
             <input
               type="text"
               value={content}
-              onChange={this.onContentChange}
+              onChange={(e) => changeContent(e.target.value)}
             />
           </div>
           <div className="add-todo-bar__form-item">
@@ -59,15 +40,12 @@ class AddTodoBar extends Component {
             <input
               type="datetime-local"
               value={deadLine}
-              onChange={this.onDeadLineChange}
+              onChange={(e) => changeDeadline(e.target.value)}
             />
           </div>
         </div>
         <div className="add-todo-bar__actions">
-          <button
-            type="button"
-            onClick={this.handleClickConfirmButton}
-          >
+          <button type="button" onClick={this.handleClickConfirmButton}>
             确认
           </button>
           <button type="button" onClick={() => hideAddTodoBar()}>

@@ -33,3 +33,19 @@ export const HIDE_MODAL = 'HIDE_MODAL';
 export const showModal = () => ({ type: SHOW_MODAL });
 
 export const hideModal = () => ({ type: HIDE_MODAL });
+
+// addTodoBar
+
+export const CHANGE_CONTENT = 'CHANGE_CONTENT';
+
+export const CHANGE_DEADLINE = 'CHANGE_DEADLINE';
+
+export const changeContent = (content) => ({
+  type: CHANGE_CONTENT,
+  payload: { content },
+});
+
+export const changeDeadline = (deadline) => ({
+  type: CHANGE_DEADLINE,
+  payload: { deadline },
+});

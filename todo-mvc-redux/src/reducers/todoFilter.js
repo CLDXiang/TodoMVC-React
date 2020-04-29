@@ -5,9 +5,10 @@ const initialState = {
 };
 
 const todoFilterReducer = (state = initialState, action) => {
-  const { newGroup } = action.payload;
+  let newGroup;
   switch (action.type) {
     case CHANGE_SHOWING_GROUP:
+      newGroup = action.payload.newGroup;
       return {
         showingGroup: newGroup,
       };

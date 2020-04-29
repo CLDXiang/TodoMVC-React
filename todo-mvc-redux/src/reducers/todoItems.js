@@ -139,10 +139,12 @@ if (!todoItemsFromStorage || !nextIdFromStorage) {
 
 const todoItemsReducer = (state = initialState, action) => {
   const { todoItems, nextId } = state;
-  const { item, id } = action.payload;
+  let item;
+  let id;
   let newTodoItems;
   switch (action.type) {
     case ADD_ITEM:
+      item = action.payload.item;
       newTodoItems = [
         ...todoItems,
         {
@@ -164,6 +166,7 @@ const todoItemsReducer = (state = initialState, action) => {
         nextId: nextId + 1,
       };
     case DELETE_ITEM:
+      id = action.payload.id;
       newTodoItems = todoItems.filter((it) => it.id !== id);
 
       // TODO: 中间件？
@@ -175,6 +178,7 @@ const todoItemsReducer = (state = initialState, action) => {
         todoItems: newTodoItems,
       };
     case TOGGLE_IS_COMPLETED:
+      id = action.payload.id;
       newTodoItems = todoItems.map((it) => {
         if (item.id === id) return { ...it, isCompleted: !item.isCompleted };
         return item;

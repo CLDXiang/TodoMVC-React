@@ -60,6 +60,7 @@ const Login = () => {
         } else {
           const { id } = res.data;
           storage.setItem('userId', id);
+          storage.setItem('username', username);
           setIsLoading(false);
           history.push('/');
         }
@@ -101,6 +102,7 @@ const Login = () => {
           // eslint-disable-next-line no-underscore-dangle
           const id = res.data._id;
           storage.setItem('userId', id);
+          storage.setItem('username', username);
           setIsLoading(false);
           history.push('/');
         }

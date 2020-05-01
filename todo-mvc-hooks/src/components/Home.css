@@ -1,4 +1,13 @@
 .content-box {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-box {
   height: 62%;
   width: 38%;
   min-width: 300px;
@@ -14,4 +23,19 @@
 
 .item-list {
   overflow-y: auto;
+}
+
+.header-bar {
+  position: fixed;
+  top: 0;
+  height: 44px;
+  width: 100%;
+  border-bottom: solid 2px #ddd;
+
+  box-sizing: border-box;
+  padding: 0 20px;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }

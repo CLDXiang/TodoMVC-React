@@ -14,13 +14,18 @@ const Home = () => {
   const [nextId, setNextId] = useState(0);
   const [showingGroup, setShowingGroup] = useState('all');
   const [isAddTodoBarVisible, setIsAddTodoBarVisible] = useState(false);
+  const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState('');
   const history = useHistory();
 
   useEffect(() => {
     const userIdFromStorage = storage.getItem('userId');
+    const usernameFromStorage = storage.getItem('username');
     if (!userIdFromStorage || userIdFromStorage === '') {
       history.push('/login');
     }
+    setUsername(usernameFromStorage);
+    setUserId(userIdFromStorage);
     /**
      * 仅用作测试，在没有 localStorage 的时候加载这个
      */
@@ -185,6 +190,10 @@ const Home = () => {
     setIsAddTodoBarVisible(false);
   };
 
+  const handleLogout = () => {
+    storage.clear();
+  };
+
   /** 加入新待办事项
    * item: { content, deadLine }
    */
@@ -208,41 +217,50 @@ const Home = () => {
 
   return (
     <div className="content-box">
-      <div className="item-list">
-        {todoItems
-          .filter((item) => {
-            switch (showingGroup) {
-              case 'all':
-                return true;
-              case 'completed':
-                return item.isCompleted;
-              case 'uncompleted':
-                return !item.isCompleted;
-              default:
-                return false;
-            }
-          })
-          .map((item) => (
-            <ListItem
-              key={item.id}
-              handleDeleteItem={handleDeleteItem}
-              handleChangeIsCompleted={handleChangeIsCompleted}
-              item={item}
-            />
-          ))}
+      { userId && userId !== '' && (
+      <div className="header-bar">
+        <div style={{ marginRight: '20px', fontWeight: 'bold' }}>{`${username} 的 TODO LIST`}</div>
+        <button type="button" onClick={handleLogout}>退出登录</button>
       </div>
-      <ActionBar
-        showingGroup={showingGroup}
-        handleChangeShowingGroup={handleChangeShowingGroup}
-        showAddTodoBar={showAddTodoBar}
-      />
-      {isAddTodoBarVisible && (
+      )}
+      <div className="center-box">
+        <div className="item-list">
+          {todoItems
+            .filter((item) => {
+              switch (showingGroup) {
+                case 'all':
+                  return true;
+                case 'completed':
+                  return item.isCompleted;
+                case 'uncompleted':
+                  return !item.isCompleted;
+                default:
+                  return false;
+              }
+            })
+            .map((item) => (
+              <ListItem
+                key={item.id}
+                handleDeleteItem={handleDeleteItem}
+                handleChangeIsCompleted={handleChangeIsCompleted}
+                item={item}
+              />
+            ))}
+        </div>
+        <ActionBar
+          showingGroup={showingGroup}
+          handleChangeShowingGroup={handleChangeShowingGroup}
+          showAddTodoBar={showAddTodoBar}
+        />
+        {isAddTodoBarVisible && (
         <AddTodoBar
           hideAddTodoBar={hideAddTodoBar}
           handleAddTodoItem={handleAddTodoItem}
         />
-      )}
+        )}
+      </div>
     </div>
+
   );
 };
 

@@ -1,0 +1,19 @@
+.login-bar {
+  border: solid 2px #ddd;
+  border-radius: 6px;
+  padding: 20px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.login-bar__line {
+  margin: 10px 0;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.login-bar__line > button {
+  margin: 0 20px;
+}

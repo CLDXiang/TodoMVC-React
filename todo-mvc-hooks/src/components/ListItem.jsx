@@ -11,7 +11,7 @@ const ListItem = (props) => {
     <div className="list-item">
       <div
         className="list-item__content"
-        onClick={() => handleChangeIsCompleted(id)}
+        onClick={() => handleChangeIsCompleted(item)}
       >
         <span
           className={isCompleted ? 'content__line content__line--completed' : 'content__line'}

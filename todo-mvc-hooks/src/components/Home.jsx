@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import axios from 'axios';
 import ListItem from './ListItem';
 import ActionBar from './ActionBar';
 import AddTodoBar from './AddTodoBar';
 import './Home.css';
 import storage from '../utils/storage';
+import { API_URL } from '../utils/config';
 
 moment.locale('zh-cn');
 
 const Home = () => {
   const [todoItems, setTodoItems] = useState([]);
-  const [nextId, setNextId] = useState(0);
   const [showingGroup, setShowingGroup] = useState('all');
   const [isAddTodoBarVisible, setIsAddTodoBarVisible] = useState(false);
   const [username, setUsername] = useState('');
@@ -26,156 +27,88 @@ const Home = () => {
     }
     setUsername(usernameFromStorage);
     setUserId(userIdFromStorage);
-    /**
-     * 仅用作测试，在没有 localStorage 的时候加载这个
-     */
-    const testState = {
-      todoItems: [
-        {
-          id: 0,
-          content: '待办事项1',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: false,
-        },
-        {
-          id: 1,
-          content: '待办事项2',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: true,
-        },
-        {
-          id: 3,
-          content: '待办事项3',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: false,
-        },
-        {
-          id: 4,
-          content: '待办事项4',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: true,
-        },
-        {
-          id: 5,
-          content: '待办事项5',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: false,
-        },
-        {
-          id: 6,
-          content: '待办事项6',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: true,
-        },
-        {
-          id: 7,
-          content: '待办事项7',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: false,
-        },
-        {
-          id: 8,
-          content: '待办事项8',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: true,
-        },
-        {
-          id: 9,
-          content: '待办事项9',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: false,
-        },
-        {
-          id: 10,
-          content: '待办事项10',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: true,
-        },
-        {
-          id: 11,
-          content: '待办事项11',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: false,
-        },
-        {
-          id: 12,
-          content: '待办事项12',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: true,
-        },
-        {
-          id: 13,
-          content: '待办事项13',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: false,
-        },
-        {
-          id: 14,
-          content: '待办事项14',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: true,
-        },
-        {
-          id: 15,
-          content: '待办事项15',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: false,
-        },
-        {
-          id: 16,
-          content: '待办事项16',
-          createdAt: '2020/4/20 13:41:12',
-          deadLine: '2020/4/20 13:41:13',
-          isCompleted: true,
-        },
-      ],
-      nextId: 17,
-    };
 
     const todoItemsFromStorage = storage.getItem('todoItems');
-    const nextIdFromStorage = storage.getItem('nextId');
-    if (!todoItemsFromStorage || !nextIdFromStorage) {
-      storage.clear();
-      setTodoItems(testState.todoItems);
-      setNextId(testState.nextId);
-      return;
-    }
 
     // 设置从 localStorage 中读取的数据
-    setTodoItems(todoItemsFromStorage);
-    setNextId(nextIdFromStorage);
-  }, [history]);
+    if (todoItemsFromStorage) setTodoItems(todoItemsFromStorage);
+
+    // 从后端读取
+    if (userId && userId !== '') {
+      axios
+        .post(`${API_URL}/todo/get`, {
+          userId,
+        })
+        .then((res) => {
+          console.log(res);
+          if (res.data.errCode) {
+            alert('请求错误');
+          } else {
+            const todoItemsFromDataBase = res.data.map((item) => ({
+              // eslint-disable-next-line no-underscore-dangle
+              id: item._id,
+              content: item.content,
+              createdAt: moment(item.createdAt).format('YYYY/M/D HH:mm:ss'),
+              deadLine: moment(item.deadline).format('YYYY/M/D HH:mm:ss'),
+              isCompleted: item.isCompleted,
+              updatedAt: moment(item.updatedAt).format('YYYY/M/D HH:mm:ss'),
+            }));
+            setTodoItems(todoItemsFromDataBase);
+            storage.setItem('todoItems', todoItemsFromDataBase);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [history, userId]);
 
   const handleDeleteItem = (id) => {
-    const newTodoItems = todoItems.filter((item) => item.id !== id);
-    setTodoItems(newTodoItems);
-    storage.setItem('todoItems', newTodoItems);
-    storage.setItem('nextId', nextId);
+    axios
+      .post(`${API_URL}/todo/remove`, {
+        userId,
+        todoId: id,
+      })
+      .then((res) => {
+        if (res.data.errCode) {
+          alert('请求错误');
+        } else {
+          // 数据库成功删除，前端模拟删除
+          const newTodoItems = todoItems.filter((item) => item.id !== id);
+          setTodoItems(newTodoItems);
+          storage.setItem('todoItems', newTodoItems);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  const handleChangeIsCompleted = (id) => {
-    const newTodoItems = todoItems.map((item) => {
-      if (item.id === id) return { ...item, isCompleted: !item.isCompleted };
-      return item;
-    });
-    setTodoItems(newTodoItems);
-    storage.setItem('todoItems', newTodoItems);
-    storage.setItem('nextId', nextId);
+  const handleChangeIsCompleted = (item) => {
+    axios
+      .post(`${API_URL}/todo/edit`, {
+        userId,
+        todoId: item.id,
+        content: item.content,
+        deadline: item.deadLine,
+        isCompleted: !item.isCompleted,
+      })
+      .then((res) => {
+        if (res.data.errCode) {
+          alert('请求错误');
+        } else {
+          // 数据库成功修改，前端模拟修改
+          const newTodoItems = todoItems.map((it) => {
+            if (it.id === item.id) return { ...it, isCompleted: !it.isCompleted };
+            return it;
+          });
+          setTodoItems(newTodoItems);
+          storage.setItem('todoItems', newTodoItems);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleChangeShowingGroup = (newGroup) => {
@@ -199,30 +132,49 @@ const Home = () => {
    * item: { content, deadLine }
    */
   const handleAddTodoItem = (item) => {
-    const newTodoItems = [
-      ...todoItems,
-      {
-        content: item.content,
-        deadLine: moment(item.deadLine).format('YYYY/M/D HH:mm:ss'),
-        id: nextId,
-        createdAt: moment().format('YYYY/M/D HH:mm:ss'),
-        isCompleted: false,
-      },
-    ];
+    const { content, deadLine } = item;
 
-    setTodoItems(newTodoItems);
-    setNextId(nextId + 1);
-    storage.setItem('todoItems', newTodoItems);
-    storage.setItem('nextId', nextId + 1);
+    axios
+      .post(`${API_URL}/todo/add`, {
+        userId,
+        content,
+        deadline: deadLine,
+      })
+      .then((res) => {
+        if (res.data.errCode) {
+          alert('请求错误');
+        } else {
+          // 将后端返回的新项目加入列表
+          const newItem = {
+            // eslint-disable-next-line no-underscore-dangle
+            id: res.data._id,
+            content: res.data.content,
+            createdAt: moment(res.data.createdAt).format('YYYY/M/D HH:mm:ss'),
+            deadLine: moment(res.data.deadline).format('YYYY/M/D HH:mm:ss'),
+            isCompleted: res.data.isCompleted,
+            updatedAt: moment(res.data.updatedAt).format('YYYY/M/D HH:mm:ss'),
+          };
+          const newTodoItems = [...todoItems, newItem];
+          setTodoItems(newTodoItems);
+          storage.setItem('todoItems', newTodoItems);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
     <div className="content-box">
-      { userId && userId !== '' && (
-      <div className="header-bar">
-        <div style={{ marginRight: '20px', fontWeight: 'bold' }}>{`${username} 的 TODO LIST`}</div>
-        <button type="button" onClick={handleLogout}>退出登录</button>
-      </div>
+      {userId && userId !== '' && (
+        <div className="header-bar">
+          <div style={{ marginRight: '20px', fontWeight: 'bold' }}>
+            {`${username} 的 TODO LIST`}
+          </div>
+          <button type="button" onClick={handleLogout}>
+            退出登录
+          </button>
+        </div>
       )}
       <div className="center-box">
         <div className="item-list">
@@ -254,14 +206,13 @@ const Home = () => {
           showAddTodoBar={showAddTodoBar}
         />
         {isAddTodoBarVisible && (
-        <AddTodoBar
-          hideAddTodoBar={hideAddTodoBar}
-          handleAddTodoItem={handleAddTodoItem}
-        />
+          <AddTodoBar
+            hideAddTodoBar={hideAddTodoBar}
+            handleAddTodoItem={handleAddTodoItem}
+          />
         )}
       </div>
     </div>
-
   );
 };
 

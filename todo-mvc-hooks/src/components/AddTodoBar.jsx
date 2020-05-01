@@ -4,15 +4,15 @@ import './AddTodoBar.css';
 
 const AddTodoBar = (props) => {
   const [content, setContent] = useState('');
-  const [deadLine, setDeadLine] = useState('');
+  const [deadline, setDeadline] = useState('');
   const { hideAddTodoBar, handleAddTodoItem } = props;
 
   const onContentChange = (e) => {
     setContent(e.target.value);
   };
 
-  const onDeadLineChange = (e) => {
-    setDeadLine(e.target.value);
+  const onDeadlineChange = (e) => {
+    setDeadline(e.target.value);
   };
 
   const handleClickConfirmButton = () => {
@@ -20,12 +20,12 @@ const AddTodoBar = (props) => {
       window.alert('请输入内容');
       return;
     }
-    if (deadLine === '') {
+    if (deadline === '') {
       window.alert('请选择截止时间');
       return;
     }
     // TODO: 截止时间不能比现在更早
-    handleAddTodoItem({ content, deadLine });
+    handleAddTodoItem({ content, deadline });
     hideAddTodoBar();
   };
 
@@ -44,8 +44,8 @@ const AddTodoBar = (props) => {
           截止时间：
           <input
             type="datetime-local"
-            value={deadLine}
-            onChange={onDeadLineChange}
+            value={deadline}
+            onChange={onDeadlineChange}
           />
         </div>
       </div>

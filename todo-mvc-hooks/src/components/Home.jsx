@@ -40,7 +40,6 @@ const Home = () => {
           userId,
         })
         .then((res) => {
-          console.log(res);
           if (res.data.errCode) {
             alert('请求错误');
           } else {
@@ -49,7 +48,7 @@ const Home = () => {
               id: item._id,
               content: item.content,
               createdAt: moment(item.createdAt).format('YYYY/M/D HH:mm:ss'),
-              deadLine: moment(item.deadline).format('YYYY/M/D HH:mm:ss'),
+              deadline: moment(item.deadline).format('YYYY/M/D HH:mm:ss'),
               isCompleted: item.isCompleted,
               updatedAt: moment(item.updatedAt).format('YYYY/M/D HH:mm:ss'),
             }));
@@ -90,7 +89,7 @@ const Home = () => {
         userId,
         todoId: item.id,
         content: item.content,
-        deadline: item.deadLine,
+        deadline: item.deadline,
         isCompleted: !item.isCompleted,
       })
       .then((res) => {
@@ -129,16 +128,16 @@ const Home = () => {
   };
 
   /** 加入新待办事项
-   * item: { content, deadLine }
+   * item: { content, deadline }
    */
   const handleAddTodoItem = (item) => {
-    const { content, deadLine } = item;
+    const { content, deadline } = item;
 
     axios
       .post(`${API_URL}/todo/add`, {
         userId,
         content,
-        deadline: deadLine,
+        deadline,
       })
       .then((res) => {
         if (res.data.errCode) {
@@ -150,7 +149,7 @@ const Home = () => {
             id: res.data._id,
             content: res.data.content,
             createdAt: moment(res.data.createdAt).format('YYYY/M/D HH:mm:ss'),
-            deadLine: moment(res.data.deadline).format('YYYY/M/D HH:mm:ss'),
+            deadline: moment(res.data.deadline).format('YYYY/M/D HH:mm:ss'),
             isCompleted: res.data.isCompleted,
             updatedAt: moment(res.data.updatedAt).format('YYYY/M/D HH:mm:ss'),
           };

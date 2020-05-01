@@ -4,7 +4,7 @@ import './ListItem.css';
 const ListItem = (props) => {
   const { item, handleDeleteItem, handleChangeIsCompleted } = props;
   const {
-    id, content, createdAt, deadLine, isCompleted,
+    id, content, createdAt, deadline, isCompleted,
   } = item;
 
   return (
@@ -25,7 +25,7 @@ const ListItem = (props) => {
           </span>
           <span className="content__time">
             截止时间：
-            {deadLine}
+            {deadline}
           </span>
         </span>
       </div>

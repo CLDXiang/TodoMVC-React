@@ -2,8 +2,7 @@ import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
 import { PORT } from './config';
-import loginService from './modules/service.login';
-import registerService from './modules/service.register';
+import { userLogin, userRegister } from './modules/service.user';
 
 const app = new Koa();
 const router = Router();
@@ -15,9 +14,8 @@ app.use(async (ctx, next) => {
 
 app.use(bodyParser());
 
-router.post('/api/login', loginService);
-
-router.post('/api/register', registerService);
+router.post('/api/login', userLogin);
+router.post('/api/register', userRegister);
 
 app.use(router.routes());
 

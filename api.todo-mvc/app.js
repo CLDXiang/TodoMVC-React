@@ -17,9 +17,9 @@ app.use(async (ctx, next) => {
 
 app.use(bodyParser());
 
-router.get('/api/login', loginService);
+router.post('/api/login', loginService);
 
-router.get('/api/register', registerService);
+router.post('/api/register', registerService);
 
 app.use(router.routes());
 

@@ -1,6 +1,7 @@
 // 封装 window.localStorage 以支持存储 Object
 
 const setItem = (key, value) => {
+  if (value === undefined) return null;
   const parsedValue = JSON.stringify(value);
   return window.localStorage.setItem(key, parsedValue);
 };

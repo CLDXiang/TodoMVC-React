@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import ListItem from './ListItem';
 import ActionBar from './ActionBar';
@@ -13,8 +14,13 @@ const Home = () => {
   const [nextId, setNextId] = useState(0);
   const [showingGroup, setShowingGroup] = useState('all');
   const [isAddTodoBarVisible, setIsAddTodoBarVisible] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
+    const userIdFromStorage = storage.getItem('userId');
+    if (!userIdFromStorage || userIdFromStorage === '') {
+      history.push('/login');
+    }
     /**
      * 仅用作测试，在没有 localStorage 的时候加载这个
      */

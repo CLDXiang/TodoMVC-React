@@ -8,6 +8,17 @@ import { todoGet, todoAdd, todoRemove, todoEdit } from './services/service.todo'
 const app = new Koa();
 const router = Router();
 
+app.use(async (ctx, next)=> {
+  ctx.set('Access-Control-Allow-Origin', '*');
+  ctx.set('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With');
+  ctx.set('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+  if (ctx.method == 'OPTIONS') {
+    ctx.body = 200; 
+  } else {
+    await next();
+  }
+});
+
 app.use(async (ctx, next) => {
   console.log(`Receive request: ${ctx.request.method} ${ctx.request.url}...`);
   await next();

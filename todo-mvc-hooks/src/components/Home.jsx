@@ -4,7 +4,7 @@ import moment from 'moment';
 import axios from 'axios';
 import ListItem from './ListItem';
 import ActionBar from './ActionBar';
-import AddTodoBar from './AddTodoBar';
+import EditTodoBar from './EditTodoBar';
 import './Home.css';
 import storage from '../utils/storage';
 import { API_URL } from '../utils/config';
@@ -14,7 +14,9 @@ moment.locale('zh-cn');
 const Home = () => {
   const [todoItems, setTodoItems] = useState([]);
   const [showingGroup, setShowingGroup] = useState('all');
-  const [isAddTodoBarVisible, setIsAddTodoBarVisible] = useState(false);
+  const [isEditTodoBarVisible, setIsEditTodoBarVisible] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
   const history = useHistory();
@@ -47,10 +49,10 @@ const Home = () => {
               // eslint-disable-next-line no-underscore-dangle
               id: item._id,
               content: item.content,
-              createdAt: moment(item.createdAt).format('YYYY/M/D HH:mm:ss'),
-              deadline: moment(item.deadline).format('YYYY/M/D HH:mm:ss'),
+              createdAt: moment(item.createdAt).format('YYYY-MM-DDTHH:mm:ss'),
+              deadline: moment(item.deadline).format('YYYY-MM-DDTHH:mm:ss'),
               isCompleted: item.isCompleted,
-              updatedAt: moment(item.updatedAt).format('YYYY/M/D HH:mm:ss'),
+              updatedAt: moment(item.updatedAt).format('YYYY-MM-DDTHH:mm:ss'),
             }));
             setTodoItems(todoItemsFromDataBase);
             storage.setItem('todoItems', todoItemsFromDataBase);
@@ -114,12 +116,12 @@ const Home = () => {
     setShowingGroup(newGroup);
   };
 
-  const showAddTodoBar = () => {
-    setIsAddTodoBarVisible(true);
+  const showEditTodoBar = () => {
+    setIsEditTodoBarVisible(true);
   };
 
-  const hideAddTodoBar = () => {
-    setIsAddTodoBarVisible(false);
+  const hideEditTodoBar = () => {
+    setIsEditTodoBarVisible(false);
   };
 
   const handleLogout = () => {
@@ -148,10 +150,10 @@ const Home = () => {
             // eslint-disable-next-line no-underscore-dangle
             id: res.data._id,
             content: res.data.content,
-            createdAt: moment(res.data.createdAt).format('YYYY/M/D HH:mm:ss'),
-            deadline: moment(res.data.deadline).format('YYYY/M/D HH:mm:ss'),
+            createdAt: moment(res.data.createdAt).format('YYYY-MM-DDTHH:mm:ss'),
+            deadline: moment(res.data.deadline).format('YYYY-MM-DDTHH:mm:ss'),
             isCompleted: res.data.isCompleted,
-            updatedAt: moment(res.data.updatedAt).format('YYYY/M/D HH:mm:ss'),
+            updatedAt: moment(res.data.updatedAt).format('YYYY-MM-DDTHH:mm:ss'),
           };
           const newTodoItems = [...todoItems, newItem];
           setTodoItems(newTodoItems);
@@ -161,6 +163,47 @@ const Home = () => {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const handleEditTodoItem = (item) => {
+    const { content, deadline } = item;
+
+    axios
+      .post(`${API_URL}/todo/edit`, {
+        userId,
+        todoId: currentItem.id,
+        content,
+        deadline,
+        isCompleted: currentItem.isCompleted,
+      })
+      .then((res) => {
+        if (res.data.errCode) {
+          alert('请求错误');
+        } else {
+          // 数据库成功修改，前端模拟修改
+          const newTodoItems = todoItems.map((it) => {
+            if (it.id === currentItem.id) return { ...it, content, deadline };
+            return it;
+          });
+          setTodoItems(newTodoItems);
+          storage.setItem('todoItems', newTodoItems);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleClickAddItem = () => {
+    setCurrentItem(null);
+    setIsEditMode(false);
+    showEditTodoBar();
+  };
+
+  const handleClickEditItem = (item) => {
+    setCurrentItem(item);
+    setIsEditMode(true);
+    showEditTodoBar();
   };
 
   return (
@@ -194,6 +237,7 @@ const Home = () => {
               <ListItem
                 key={item.id}
                 handleDeleteItem={handleDeleteItem}
+                handleClickEditItem={handleClickEditItem}
                 handleChangeIsCompleted={handleChangeIsCompleted}
                 item={item}
               />
@@ -202,12 +246,15 @@ const Home = () => {
         <ActionBar
           showingGroup={showingGroup}
           handleChangeShowingGroup={handleChangeShowingGroup}
-          showAddTodoBar={showAddTodoBar}
+          handleClickAddItem={handleClickAddItem}
         />
-        {isAddTodoBarVisible && (
-          <AddTodoBar
-            hideAddTodoBar={hideAddTodoBar}
+        {isEditTodoBarVisible && (
+          <EditTodoBar
+            isEditMode={isEditMode}
+            currentItem={currentItem}
+            hideEditTodoBar={hideEditTodoBar}
             handleAddTodoItem={handleAddTodoItem}
+            handleEditTodoItem={handleEditTodoItem}
           />
         )}
       </div>

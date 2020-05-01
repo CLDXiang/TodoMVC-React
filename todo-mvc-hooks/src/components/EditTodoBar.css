@@ -1,4 +1,4 @@
-.add-todo-bar {
+.edit-todo-bar {
   position: fixed;
   top: calc(50% - 150px);
   left: calc(50% - 150px);
@@ -25,22 +25,22 @@
   transition: transparent 10s ease-in;
 }
 
-.add-todo-bar__form {
+.edit-todo-bar__form {
   flex: 1;
 
   display: flex;
   flex-direction: column;
 }
 
-.add-todo-bar__form-item {
+.edit-todo-bar__form-item {
   padding-top: 10px;
 }
 
-.add-todo-bar__actions {
+.edit-todo-bar__actions {
   display: flex;
   justify-content: flex-end;
 }
 
-.add-todo-bar__actions > button {
+.edit-todo-bar__actions > button {
   margin-left: 20px;
 }

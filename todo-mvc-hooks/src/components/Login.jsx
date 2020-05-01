@@ -11,6 +11,14 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
+  useEffect(() => {
+    // 若本地已有登录态则直接跳转到首页
+    const userIdFromStorage = storage.getItem('userId');
+    if (userIdFromStorage && userIdFromStorage !== '') {
+      history.push('/');
+    }
+  }, [history]);
+
   const onUsernameChange = (e) => {
     setUsername(e.target.value);
   };
@@ -29,6 +37,8 @@ const Login = () => {
       return;
     }
     setIsLoading(true);
+
+    // 登录
     axios
       .post(`${API_URL}/user/login`, {
         username,
@@ -46,12 +56,13 @@ const Login = () => {
             default:
               alert('请求错误');
           }
+          setIsLoading(false);
         } else {
           const { id } = res.data;
           storage.setItem('userId', id);
+          setIsLoading(false);
           history.push('/');
         }
-        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -59,7 +70,46 @@ const Login = () => {
       });
   };
 
-  const onRegister = () => {};
+  const onRegister = () => {
+    if (username === '') {
+      alert('用户名不能为空！');
+      return;
+    }
+    if (password === '') {
+      alert('密码不能为空！');
+      return;
+    }
+    setIsLoading(true);
+
+    // 注册
+    axios
+      .post(`${API_URL}/user/register`, {
+        username,
+        password,
+      })
+      .then((res) => {
+        if (res.data.errCode) {
+          switch (res.data.errCode) {
+            case 2:
+              alert('用户名已存在');
+              break;
+            default:
+              alert('请求错误');
+          }
+          setIsLoading(false);
+        } else {
+          // eslint-disable-next-line no-underscore-dangle
+          const id = res.data._id;
+          storage.setItem('userId', id);
+          setIsLoading(false);
+          history.push('/');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
+  };
 
   return (
     <div className="login-bar">

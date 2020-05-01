@@ -154,7 +154,7 @@ const Home = () => {
     // 设置从 localStorage 中读取的数据
     setTodoItems(todoItemsFromStorage);
     setNextId(nextIdFromStorage);
-  }, []);
+  }, [history]);
 
   const handleDeleteItem = (id) => {
     const newTodoItems = todoItems.filter((item) => item.id !== id);

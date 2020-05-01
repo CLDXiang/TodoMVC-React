@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
-import config from './config';
-
-const { DB_URL } = config;
+import { DB_URL } from './config';
 
 mongoose.connect(DB_URL);
 
@@ -18,6 +16,14 @@ const userSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-const User = mongoose.model('User', userSchema);
+const todoSchema = new mongoose.Schema({
+  content: String,
+  deadline: String, // received from frontend
+  isCompleted: Boolean,
+  creatorId: String, // received from frontend 
+}, {
+  timestamps: true,
+});
 
-export default User;
+export const userModel = mongoose.model('User', userSchema);
+export const todoModel = mongoose.model('Todo', todoSchema);

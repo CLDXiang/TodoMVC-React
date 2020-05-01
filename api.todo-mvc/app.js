@@ -1,11 +1,9 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
-import config from './config';
+import { PORT } from './config';
 import loginService from './modules/service.login';
 import registerService from './modules/service.register';
-
-const { PORT } = config;
 
 const app = new Koa();
 const router = Router();

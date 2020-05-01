@@ -1,4 +1,4 @@
-import userModel from '../storage';
+import { userModel } from '../storage';
 
 export default async (ctx) => {
   const { username, password } = ctx.request.body;

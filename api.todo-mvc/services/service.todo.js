@@ -22,6 +22,7 @@ export const todoAdd = async (ctx) => {
       creatorId: userId,
       content,
       deadline,
+      isCompleted: false,
     }).save();
   } else {
     ctx.response.body = err[1];
@@ -41,11 +42,11 @@ export const todoRemove = async (ctx) => {
 };
 
 export const todoEdit = async (ctx) => {
-  const { userId, todoId, content, deadline } = ctx.request.body;
+  const { userId, todoId, content, deadline, isCompleted } = ctx.request.body;
   if (userId && todoId && content && deadline) {
     ctx.response.body = await todoModel.updateOne(
       { _id: todoId, creatorId: userId },
-      { content, deadline }
+      { content, deadline, isCompleted }
     );
   } else {
     ctx.response.body = err[1];

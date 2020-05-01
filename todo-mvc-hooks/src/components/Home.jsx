@@ -192,6 +192,7 @@ const Home = () => {
 
   const handleLogout = () => {
     storage.clear();
+    history.push('/login');
   };
 
   /** 加入新待办事项
